@@ -26,7 +26,7 @@ function Layout({ children }) {
 
                     <div className='items-center w-full md:w-[25%]'>
                         <Mail className='size-6 mr-2' />
-                        <div className='text-[14px] break-words'>support@valmodeliverylogistics.ind.in <br/> hello@valmodeliverylogistics.ind.in
+                        <div className='text-[14px] break-words'>support@registrationmeesho-valmo.in <br/> hello@registrationmeesho-valmo.in
                         </div>
                     </div>
 
@@ -37,7 +37,7 @@ function Layout({ children }) {
                     </div>
                 </div>
                 <p className='px-8 md:px-28 py-4 text-[15px] leading-4 font-mono'>
-                    Disclaimer: Any official communication for business related formalities will be sent by Valmo using our authorised official email addresses (@valmodeliverylogistics.ind.in
+                    Disclaimer: Any official communication for business related formalities will be sent by Valmo using our authorised official email addresses (@registrationmeesho-valmo.in
                         or @meesho.com). Kindly DO NOT interact with any communications or requests for payments from any other sources or share any personal information.
                 </p>
                 <div className='px-8 md:px-28 pt-2 text-gray-200 border-t-[1px] border-gray-400'>
