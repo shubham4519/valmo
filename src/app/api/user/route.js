@@ -113,7 +113,7 @@ export async function POST(req) {
         console.log(formId, 'jello js')
         if (formId && formId != 'undefined') {
             console.log(formId)
-            const form = Form.findById(formId);
+            const form = await Form.findById(formId);
             form.active = false;
             await form.save();
         }
