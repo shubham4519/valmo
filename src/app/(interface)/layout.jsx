@@ -26,7 +26,7 @@ function Layout({ children }) {
 
                     <div className='items-center w-full md:w-[25%]'>
                         <Mail className='size-6 mr-2' />
-                        <div className='text-[14px] break-words'>support@registrationmeesho-valmo.in  <br/> hello@registrationmeesho-valmo.in 
+                        <div className='text-[14px] break-words'>support@registrations-valmo.in  <br/> hello@registrations-valmo.in 
                         </div>
                     </div>
 
@@ -50,3 +50,4 @@ function Layout({ children }) {
 }
 
 export default Layout
+
