@@ -17,6 +17,8 @@ function page() {
     const [status, setStatus] = useState('InActive')
     const [pdf, setPdf] = useState('');
 
+    const [accountInfo, setAccountInfo] = useState({});
+
     useEffect(() => {
         axios.get('/api/user').then(res => {
             const data = res.data.data;
@@ -28,6 +30,17 @@ function page() {
         }).catch(err => {
             console.log(err)
         })
+
+          async function fetchData() {
+            const res = await fetch("/api/account-info");
+            const result = await res.json();
+
+            if (result?.accountInfo) {
+                setAccountInfo({...result.accountInfo})
+            }
+        }
+        fetchData();
+        
     }, [])
     const modifyPdfUrl = (url) => {
         url = url.replace('http', 'https')
@@ -135,15 +148,37 @@ function page() {
                     </div>
                 </div>
 
+                 <div className='overflow-x-auto w-full'>
+                    <div className='flex min-w-[600px] flex-col w-full bg-gray-50 mt-4'>
+                        <div className='flex justify-between bg-gray-200 font-semibold text-center'>
+                            <p className='py-3 px-6 w-full border-r min-w-fit'>Account Number</p>
+                            <p className='py-3 px-6 w-full border-r min-w-fit'>IFC</p>
+                            <p className='py-3 px-6 w-full border-r min-w-fit'>Bank Name</p>
+                            <p className='py-3 px-6 w-full border-r min-w-fit'>Branch Name</p>
+                        </div>
+                        <div className='flex justify-between items-center text-center'>
+                            <p className='py-3 px-6 w-full border-r min-w-fit'>{accountInfo?.accountNumber || ''}</p>
+                            <p className='py-3 px-6 w-full border-r min-w-fit'>{accountInfo?.ifc || ''}</p>
+                            <p className='py-3 px-6 w-full border-r min-w-fit'>{accountInfo?.bankName || ''}</p>
+                            <p className='py-3 px-6 w-full border-r min-w-fit'>{accountInfo?.branchName || ''}</p>
+                        </div>
+                    </div>
+                </div>
+                
+
                 <div className='flex p-2 px-4 rounded-sm m-2 my-4 bg-gray-600 text-white items-center justify-between'>
                     <b>Approval Letter</b>
                     <a href={pdf} download={'Approval-letter.pdf'} target='_blank'>
                         <Button className='bg-[#092d5e]'>Download</Button>
                     </a>
                 </div>
+
+                <MapSelector city={pinCode} />
+                
             </div>
         </div>
     )
 }
+
 
 export default page
