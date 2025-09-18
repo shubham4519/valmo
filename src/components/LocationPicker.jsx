@@ -46,7 +46,7 @@ function DraggableMarker({ position, onChange }) {
 async function getCoordinatesFromCity(cityName) {
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${cityName}`
+      `https://nominatim.openstreetmap.org/search?format=json&postalcode=${cityName}&countrycodes=in`
     );
     const data = await res.json();
     if (data.length > 0) {
@@ -91,3 +91,4 @@ export function MapSelector({ city = "Pune", onSelect }) {
     </MapContainer>
   );
 }
+
