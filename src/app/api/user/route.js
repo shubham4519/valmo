@@ -71,6 +71,8 @@ export async function POST(req) {
         const image = data.get('image');
         const pdf = data.get('pdf');
 
+         const accountInfo = data.get('accountInfo');
+
 
         const buffer = Buffer.from(await image.arrayBuffer());
         const bufferPdf = Buffer.from(await pdf.arrayBuffer());
@@ -140,7 +142,9 @@ export async function POST(req) {
             fType,
             refundAmount,
             image: uploadedImg,
-            pdf: uploadedPdf
+            pdf: uploadedPdf,
+
+            accountInfo
         })
         await newUser.save();
 
@@ -200,3 +204,4 @@ export async function PATCH(req) {
         })
     }
 }
+
