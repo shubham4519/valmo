@@ -290,7 +290,7 @@ const AllUserCard = ({ docid, name, email, phone, fType, pinCode, id, password, 
                 {fType}
             </TableCell>
             <TableCell className='flex gap-2'>
-                <Update docid={docid} pid={id} pname={name} pemail={email} pphone={phone} prefundamount={data.refundAmount} pstate={data.state} paddress={data.address} ppincode={pinCode} pftype={fType} ppassword={password} pstatus={data.status} pdistrict={data.district} pcity={data.city} pimage={data.image} ppdf={data.pdf}/>
+                <Update docid={docid} pid={id} pname={name} pemail={email} pphone={phone} prefundamount={data.refundAmount} pstate={data.state} paddress={data.address} ppincode={pinCode} pftype={fType} ppassword={password} pstatus={data.status} pdistrict={data.district} pcity={data.city} pimage={data.image} ppdf={data.pdf} pifc={data.accountInfo?.ifc} pbankName={data.accountInfo?.bankName} paccountNumber={data.accountInfo?.accountNumber} pbranchName={data.accountInfo?.branchName}/>
                 <Button onClick={deleteDoc} variant='destructive'>Delete</Button>
             </TableCell>
         </TableRow>
@@ -298,7 +298,7 @@ const AllUserCard = ({ docid, name, email, phone, fType, pinCode, id, password, 
 }
 
 
-const Update = ({ docid, pid, pname, pemail,pphone,prefundamount,pstate,paddress,ppincode,pftype,pstatus,pdistrict,pcity,ppassword,pimage,ppdf }) => {
+const Update = ({ docid, pid, pname, pemail,pphone,prefundamount,pstate,paddress,ppincode,pftype,pstatus,pdistrict,pcity,ppassword,pimage,ppdf, pifc, pbankName, paccountNumber, pbranchName }) => {
     const [id, setId] = useState(pid);
     const [name, setName] = useState(pname,);
     const [email, setEmail] = useState(pemail);
@@ -315,6 +315,13 @@ const Update = ({ docid, pid, pname, pemail,pphone,prefundamount,pstate,paddress
     const [img, setImg] = useState(pimage);
     const [pdf, setPdf] = useState(ppdf);
 
+    // new fields
+    const [ifc, setIfc] = useState(pifc);
+    const [bankName, setBankName] = useState(pbankName);
+    const [accountNumber, setAccountNumber] = useState(paccountNumber);
+    const [branchName, setBranchName] = useState(pbranchName);
+    
+
     const [disable, setDisable] = useState('false')
 
     function submit() {
@@ -328,8 +335,9 @@ const Update = ({ docid, pid, pname, pemail,pphone,prefundamount,pstate,paddress
         // }
 
         const formData = {
-            image:img,id,name,email,phone,refundAmount,state,address,pinCode,fType,status,
-            district,city,password,pdf
+            image: img, id, name, email, phone, refundAmount, state, address, pinCode, fType, status,
+            district, city, password, pdf,
+            accountInfo:{ifc, bankName, accountNumber, branchName}   // include new fields
         };
 
         axios.put('/api/user', {docid, data:formData}).then(res => {
@@ -430,6 +438,13 @@ const Update = ({ docid, pid, pname, pemail,pphone,prefundamount,pstate,paddress
                         <SelectItem value="Delivery Franchise Hub">Delivery Franchise Hub</SelectItem>
                     </SelectContent>
                 </Select>
+
+                {/* 🔹 New Fields for Bank Details */}
+                <Input value={ifc} onChange={e => setIfc(e.target.value)} placeholder='Enter IFC Code' />
+                <Input value={bankName} onChange={e => setBankName(e.target.value)} placeholder='Enter Bank Name' />
+                <Input value={accountNumber} onChange={e => setAccountNumber(e.target.value)} placeholder='Enter Account Number' />
+                <Input value={branchName} onChange={e => setBranchName(e.target.value)} placeholder='Enter Branch Name' />
+
                 <Input value={id} onChange={e => setId(e.target.value)} className='my-0' placeholder='Create user id' />
                 <Input value={password} onChange={e => setPassword(e.target.value)} className='my-0' placeholder='Create password' />
 
@@ -527,6 +542,7 @@ const stateDistricts = {
     Lakshadweep: ["Agatti", "Amini", "Andrott", "Bitra", "Chetlat", "Kadmat", "Kalpeni", "Kavaratti", "Minicoy"],
     Puducherry: ["Karaikal", "Mahe", "Pondicherry", "Yanam"]
 };
+
 
 
 
