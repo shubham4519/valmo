@@ -176,7 +176,7 @@ function page() {
                     </a>
                 </div>
 
-                <MapSelector city={pinCode} />
+                <MapSelector pincode={pinCode} />
                 
             </div>
         </div>
@@ -185,6 +185,7 @@ function page() {
 
 
 export default page
+
 
 
 
