@@ -3,8 +3,10 @@ import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast';
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { MapSelector } from '@/components/LocationPicker';
-
+const MapSelector = dynamic(
+  () => import("@/components/LocationPicker").then((mod) => mod.MapSelector),
+  { ssr: false }
+);
 function page() {
     const [id, setId] = useState('');
     const [name, setName] = useState('');
@@ -185,6 +187,7 @@ function page() {
 
 
 export default page
+
 
 
 
