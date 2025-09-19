@@ -320,10 +320,10 @@ const Create = ({ formId, ct }) => {
     const [pdf, setPdf] = useState('');
 
      // new fields
-    const [ifc, setIfc] = useState(pifc);
-    const [bankName, setBankName] = useState(pbankName);
-    const [accountNumber, setAccountNumber] = useState(paccountNumber);
-    const [branchName, setBranchName] = useState(pbranchName);
+    const [ifc, setIfc] = useState('');
+    const [bankName, setBankName] = useState('');
+    const [accountNumber, setAccountNumber] = useState('');
+    const [branchName, setBranchName] = useState('');
 
     const [disable, setDisable] = useState('false')
 
@@ -478,6 +478,7 @@ const Create = ({ formId, ct }) => {
 
     )
 }
+
 
 
 
