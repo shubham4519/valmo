@@ -71,7 +71,15 @@ export async function POST(req) {
         const image = data.get('image');
         const pdf = data.get('pdf');
 
-         const accountInfo = data.get('accountInfo');
+         let accountInfo = null;
+    const accountInfoStr = data.get("accountInfo");
+    if (accountInfoStr) {
+      try {
+        accountInfo = JSON.parse(accountInfoStr);
+      } catch (err) {
+        console.error("Invalid accountInfo JSON:", err);
+      }
+    }
 
 
         const buffer = Buffer.from(await image.arrayBuffer());
@@ -204,4 +212,5 @@ export async function PATCH(req) {
         })
     }
 }
+
 
