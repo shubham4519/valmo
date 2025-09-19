@@ -139,7 +139,11 @@ export function MapSelector({ pincode = "110001", onSelect }) {
         zoom={13}
         style={{ height: "300px", width: "100%", borderRadius: "12px" }}
       >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <TileLayer
+  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+  attribution="© Valmo Maps"
+/>
+
         <DraggableMarker
           position={coordinates}
           onChange={(pos) =>
@@ -156,4 +160,5 @@ export function MapSelector({ pincode = "110001", onSelect }) {
     </div>
   );
 }
+
 
