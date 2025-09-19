@@ -17,6 +17,7 @@ L.Icon.Default.mergeOptions({
 });
 
 // ✅ Helper: Get coordinates from pincode
+// ✅ Helper: Get coordinates from pincode
 async function getLocationFromPincode(pincode) {
   try {
     // 1. Validate & fetch details from Postal API
@@ -34,11 +35,11 @@ async function getLocationFromPincode(pincode) {
       country: office.Country || "India",
     };
 
-    // 2. Get coordinates using Nominatim
-    const res2 = await fetch(
+    // 2. First try postalcode-based search
+    let res2 = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&postalcode=${pincode}&country=India&limit=1`
     );
-    const data2 = await res2.json();
+    let data2 = await res2.json();
 
     let coordinates = null;
     if (data2.length > 0) {
@@ -48,12 +49,31 @@ async function getLocationFromPincode(pincode) {
       };
     }
 
+    // 3. Fallback: Search by district + state
+    if (!coordinates) {
+      const query = `${office.District}, ${office.State}, India`;
+      res2 = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          query
+        )}&limit=1`
+      );
+      data2 = await res2.json();
+
+      if (data2.length > 0) {
+        coordinates = {
+          lat: parseFloat(data2[0].lat),
+          lng: parseFloat(data2[0].lon),
+        };
+      }
+    }
+
     return { ...locationDetails, coordinates };
   } catch (error) {
     console.error("Error fetching location:", error);
     return { error: "Failed to fetch location" };
   }
 }
+
 
 // ✅ Draggable Marker
 function DraggableMarker({ position, onChange }) {
@@ -136,3 +156,4 @@ export function MapSelector({ pincode = "110001", onSelect }) {
     </div>
   );
 }
+
