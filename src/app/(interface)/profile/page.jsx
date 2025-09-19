@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast';
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic';
 const MapSelector = dynamic(
   () => import("@/components/LocationPicker").then((mod) => mod.MapSelector),
   { ssr: false }
@@ -187,6 +188,7 @@ function page() {
 
 
 export default page
+
 
 
 
