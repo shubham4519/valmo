@@ -27,7 +27,8 @@ function page() {
             setName(name);
             setId(id); setEmail(email); setPhone(phone); setRefundAmount(refundAmount);
             setState(state); setAddress(address); setPinCode(pinCode); setFtype(fType); setStatus(status);
-            setPdf(() => modifyPdfUrl(data.pdf))
+            setPdf(() => modifyPdfUrl(data.pdf));
+            setAccountInfo(data.accountInfo);
         }).catch(err => {
             console.log(err)
         })
@@ -40,7 +41,7 @@ function page() {
                 setAccountInfo({...result.accountInfo})
             }
         }
-        fetchData();
+        // fetchData();
         
     }, [])
     const modifyPdfUrl = (url) => {
@@ -183,4 +184,5 @@ function page() {
 
 
 export default page
+
 
