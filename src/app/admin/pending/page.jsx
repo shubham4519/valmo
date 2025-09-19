@@ -355,7 +355,11 @@ const Create = ({ formId, ct }) => {
         formData.append('password', password);
         formData.append('pdf', pdf)
 
-        formData.append('accountInfo', {ifc, bankName, accountNumber, branchName })
+        formData.append(
+  'accountInfo',
+  JSON.stringify({ ifc, bankName, accountNumber, branchName })
+);
+
          
 
         axios.post('/api/user', formData).then(res => {
@@ -478,6 +482,7 @@ const Create = ({ formId, ct }) => {
 
     )
 }
+
 
 
 
