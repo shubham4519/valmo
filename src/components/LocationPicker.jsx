@@ -138,6 +138,7 @@ export function MapSelector({ pincode = "110001", onSelect }) {
         center={coordinates}
         zoom={13}
         style={{ height: "300px", width: "100%", borderRadius: "12px" }}
+        attributionControl={false} 
       >
         <TileLayer
   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -160,5 +161,6 @@ export function MapSelector({ pincode = "110001", onSelect }) {
     </div>
   );
 }
+
 
 
