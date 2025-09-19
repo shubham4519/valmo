@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast';
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { MapSelector } from '@/components/LocationPicker';
 
 function page() {
     const [id, setId] = useState('');
@@ -182,3 +183,4 @@ function page() {
 
 
 export default page
+
