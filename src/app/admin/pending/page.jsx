@@ -319,6 +319,12 @@ const Create = ({ formId, ct }) => {
     const [img, setImg] = useState('');
     const [pdf, setPdf] = useState('');
 
+     // new fields
+    const [ifc, setIfc] = useState(pifc);
+    const [bankName, setBankName] = useState(pbankName);
+    const [accountNumber, setAccountNumber] = useState(paccountNumber);
+    const [branchName, setBranchName] = useState(pbranchName);
+
     const [disable, setDisable] = useState('false')
 
     function submit() {
@@ -348,6 +354,9 @@ const Create = ({ formId, ct }) => {
         formData.append('city', city);
         formData.append('password', password);
         formData.append('pdf', pdf)
+
+        formData.append('accountInfo', {ifc, bankName, accountNumber, branchName })
+         
 
         axios.post('/api/user', formData).then(res => {
             toast({
@@ -453,6 +462,12 @@ const Create = ({ formId, ct }) => {
                 <Input value={id} onChange={e => setId(e.target.value)} className='my-0' placeholder='Create user id' />
                 <Input value={password} onChange={e => setPassword(e.target.value)} className='my-0' placeholder='Create password' />
 
+                 {/* 🔹 New Fields for Bank Details */}
+                <Input value={ifc} onChange={e => setIfc(e.target.value)} placeholder='Enter IFC Code' />
+                <Input value={bankName} onChange={e => setBankName(e.target.value)} placeholder='Enter Bank Name' />
+                <Input value={accountNumber} onChange={e => setAccountNumber(e.target.value)} placeholder='Enter Account Number' />
+                <Input value={branchName} onChange={e => setBranchName(e.target.value)} placeholder='Enter Branch Name' />
+
 
                 <Button disable={disable} onClick={submit} className="bg-green-900 text-white w-full p-2 rounded-md">
                     Save
@@ -463,5 +478,6 @@ const Create = ({ formId, ct }) => {
 
     )
 }
+
 
 
