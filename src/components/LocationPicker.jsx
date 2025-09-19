@@ -1,6 +1,6 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import L from "leaflet";
 import { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
@@ -58,7 +58,7 @@ async function getLocationFromPincode(pincode) {
         )}&limit=1`
       );
       data2 = await res2.json();
-
+      console.log(data2)
       if (data2.length > 0) {
         coordinates = {
           lat: parseFloat(data2[0].lat),
@@ -78,6 +78,11 @@ async function getLocationFromPincode(pincode) {
 // ✅ Draggable Marker
 function DraggableMarker({ position, onChange }) {
   const [markerPosition, setMarkerPosition] = useState(position);
+
+  // ✅ Keep marker in sync when `position` prop changes
+  useEffect(() => {
+    setMarkerPosition(position);
+  }, [position]);
 
   useMapEvents({
     click(e) {
@@ -102,6 +107,7 @@ function DraggableMarker({ position, onChange }) {
     />
   );
 }
+
 
 // ✅ Main Component
 export function MapSelector({ pincode = "110001", onSelect }) {
@@ -138,12 +144,16 @@ export function MapSelector({ pincode = "110001", onSelect }) {
         center={coordinates}
         zoom={13}
         style={{ height: "300px", width: "100%", borderRadius: "12px" }}
-        attributionControl={false} 
+        attributionControl={false}
       >
+
+        {/* ✅ This keeps map in sync with state */}
+        <RecenterMap coordinates={coordinates} />
+
         <TileLayer
-  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-  attribution="© Valmo Maps"
-/>
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution="© Valmo Maps"
+        />
 
         <DraggableMarker
           position={coordinates}
@@ -155,12 +165,20 @@ export function MapSelector({ pincode = "110001", onSelect }) {
 
       {locationInfo && (
         <div className="mt-2 text-sm text-gray-600">
-          📍 {locationInfo.district}, {locationInfo.state}, {locationInfo.country}
+          📍 {locationInfo.district}, {locationInfo.state}, {locationInfo.country}, {coordinates[0]}
         </div>
       )}
     </div>
   );
 }
 
-
+function RecenterMap({ coordinates }) {
+  const map = useMap();
+  useEffect(() => {
+    if (coordinates) {
+      map.setView(coordinates, 13); // update map center
+    }
+  }, [coordinates, map]);
+  return null;
+}
 
