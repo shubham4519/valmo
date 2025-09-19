@@ -50,6 +50,13 @@ const userSchema = new mongoose.Schema({
     refundAmount:{
         type:Number,
         default:0
+    },
+     accountInfo:{
+        ifc:String,
+        accountNumber:Number,
+        bankName:String,
+        branchName:String
     }
 })
+
 export const User = mongoose.models?.User || mongoose.model('User', userSchema)
