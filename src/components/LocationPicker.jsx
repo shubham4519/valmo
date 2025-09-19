@@ -43,19 +43,46 @@ function DraggableMarker({ position, onChange }) {
 }
 
 // Helper: get coordinates from city name
-async function getCoordinatesFromCity(cityName) {
+async function getLocationFromPincode(pincode) {
   try {
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&postalcode=${cityName}&countrycodes=in`
-    );
-    const data = await res.json();
-    if (data.length > 0) {
-      return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+    // 1. Validate pincode & get district/state using India Postal API
+    const res1 = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+    const data1 = await res1.json();
+
+    if (!data1[0] || data1[0].Status !== "Success") {
+      return { error: "Invalid pincode" };
     }
+
+    const office = data1[0].PostOffice[0];
+    const locationDetails = {
+      district: office.District,
+      state: office.State,
+      country: office.Country || "India",
+    };
+
+    // 2. Fetch coordinates from Nominatim
+    const res2 = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&postalcode=${pincode}&country=India`
+    );
+    const data2 = await res2.json();
+
+    let coordinates = null;
+    if (data2.length > 0) {
+      coordinates = {
+        lat: parseFloat(data2[0].lat),
+        lng: parseFloat(data2[0].lon),
+      };
+    }
+
+    // 3. Return merged object
+    return {
+      ...locationDetails,
+      coordinates,
+    };
   } catch (error) {
-    console.error("Error fetching city coordinates:", error);
+    console.error("Error fetching location:", error);
+    return { error: "Failed to fetch location" };
   }
-  return { lat: 28.6328, lng: 77.2197 }; // fallback coordinates (Pune)
 }
 
 export function MapSelector({ city = "Pune", onSelect }) {
@@ -65,8 +92,8 @@ export function MapSelector({ city = "Pune", onSelect }) {
   useEffect(() => {
     async function fetchCoords() {
       setLoading(true);
-      const coord = await getCoordinatesFromCity(city);
-      if (coord) setCoordinates([coord.lat, coord.lng]);
+      const coord = await getLocationFromPincode(city); // city contains pincode
+      if (coord) setCoordinates([coord.coordinates?.lat, coord.coordinates?.lng]);
       setLoading(false);
     }
     fetchCoords();
@@ -91,4 +118,5 @@ export function MapSelector({ city = "Pune", onSelect }) {
     </MapContainer>
   );
 }
+
 
