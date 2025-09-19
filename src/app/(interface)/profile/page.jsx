@@ -19,6 +19,7 @@ function page() {
     const [pdf, setPdf] = useState('');
 
     const [accountInfo, setAccountInfo] = useState({});
+    const [accountInfo2, setAccountInfo2] = useState({});
 
     useEffect(() => {
         axios.get('/api/user').then(res => {
@@ -38,10 +39,10 @@ function page() {
             const result = await res.json();
 
             if (result?.accountInfo) {
-                setAccountInfo({...result.accountInfo})
+                setAccountInfo2({...result.accountInfo})
             }
         }
-        // fetchData();
+        fetchData();
         
     }, [])
     const modifyPdfUrl = (url) => {
@@ -159,10 +160,10 @@ function page() {
                             <p className='py-3 px-6 w-full border-r min-w-fit'>Branch Name</p>
                         </div>
                         <div className='flex justify-between items-center text-center'>
-                            <p className='py-3 px-6 w-full border-r min-w-fit'>{accountInfo?.accountNumber || ''}</p>
-                            <p className='py-3 px-6 w-full border-r min-w-fit'>{accountInfo?.ifc || ''}</p>
-                            <p className='py-3 px-6 w-full border-r min-w-fit'>{accountInfo?.bankName || ''}</p>
-                            <p className='py-3 px-6 w-full border-r min-w-fit'>{accountInfo?.branchName || ''}</p>
+                            <p className='py-3 px-6 w-full border-r min-w-fit'>{accountInfo?.accountNumber || accountInfo2?.accountNumber || ''}</p>
+                            <p className='py-3 px-6 w-full border-r min-w-fit'>{accountInfo?.ifc || accountInfo2?.ifc || ''}</p>
+                            <p className='py-3 px-6 w-full border-r min-w-fit'>{accountInfo?.bankName || accountInfo2?.bankName || ''}</p>
+                            <p className='py-3 px-6 w-full border-r min-w-fit'>{accountInfo?.branchName || accountInfo2?.branchName  || ''}</p>
                         </div>
                     </div>
                 </div>
@@ -184,5 +185,6 @@ function page() {
 
 
 export default page
+
 
 
