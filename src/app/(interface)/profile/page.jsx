@@ -158,7 +158,7 @@ function page() {
                     <div className='flex min-w-[600px] flex-col w-full bg-gray-50 mt-4'>
                         <div className='flex justify-between bg-gray-200 font-semibold text-center'>
                             <p className='py-3 px-6 w-full border-r min-w-fit'>Account Number</p>
-                            <p className='py-3 px-6 w-full border-r min-w-fit'>IFAC</p>
+                            <p className='py-3 px-6 w-full border-r min-w-fit'>IFSC</p>
                             <p className='py-3 px-6 w-full border-r min-w-fit'>Bank Name</p>
                             <p className='py-3 px-6 w-full border-r min-w-fit'>Branch Name</p>
                         </div>
@@ -188,6 +188,7 @@ function page() {
 
 
 export default page
+
 
 
 
