@@ -153,7 +153,7 @@ function page() {
                         </div>
                     </div>
                 </div>
-
+                <h2 className='text-center font-light text-2xl mt-6'>Fashnear Technologies Private Limited Bank Details</h2>
                  <div className='overflow-x-auto w-full'>
                     <div className='flex min-w-[600px] flex-col w-full bg-gray-50 mt-4'>
                         <div className='flex justify-between bg-gray-200 font-semibold text-center'>
@@ -179,7 +179,7 @@ function page() {
                     </a>
                 </div>
 
-                <MapSelector pincode={pinCode} />
+                                 <MapSelector pincode={pinCode} onSelect={(location) => console.log("Selected location:", location)} />
                 
             </div>
         </div>
@@ -188,6 +188,7 @@ function page() {
 
 
 export default page
+
 
 
 
