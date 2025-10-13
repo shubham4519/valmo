@@ -1,11 +1,11 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 
-// ✅ Fix default Leaflet icon issue
+// ✅ Fix default Leaflet icon
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -17,16 +17,12 @@ L.Icon.Default.mergeOptions({
 });
 
 // ✅ Helper: Get coordinates from pincode
-// ✅ Helper: Get coordinates from pincode
 async function getLocationFromPincode(pincode) {
   try {
-    // 1. Validate & fetch details from Postal API
     const res1 = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
     const data1 = await res1.json();
 
-    if (!data1[0] || data1[0].Status !== "Success") {
-      return { error: "Invalid pincode" };
-    }
+    if (!data1[0] || data1[0].Status !== "Success") return { error: "Invalid pincode" };
 
     const office = data1[0].PostOffice[0];
     const locationDetails = {
@@ -35,36 +31,23 @@ async function getLocationFromPincode(pincode) {
       country: office.Country || "India",
     };
 
-    // 2. First try postalcode-based search
+    // Nominatim search
     let res2 = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&postalcode=${pincode}&country=India&limit=1`
     );
     let data2 = await res2.json();
 
     let coordinates = null;
-    if (data2.length > 0) {
-      coordinates = {
-        lat: parseFloat(data2[0].lat),
-        lng: parseFloat(data2[0].lon),
-      };
-    }
+    if (data2.length > 0) coordinates = { lat: parseFloat(data2[0].lat), lng: parseFloat(data2[0].lon) };
 
-    // 3. Fallback: Search by district + state
+    // Fallback: district + state
     if (!coordinates) {
       const query = `${office.District}, ${office.State}, India`;
       res2 = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          query
-        )}&limit=1`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`
       );
       data2 = await res2.json();
-      console.log(data2)
-      if (data2.length > 0) {
-        coordinates = {
-          lat: parseFloat(data2[0].lat),
-          lng: parseFloat(data2[0].lon),
-        };
-      }
+      if (data2.length > 0) coordinates = { lat: parseFloat(data2[0].lat), lng: parseFloat(data2[0].lon) };
     }
 
     return { ...locationDetails, coordinates };
@@ -74,111 +57,92 @@ async function getLocationFromPincode(pincode) {
   }
 }
 
-
-// ✅ Draggable Marker
-function DraggableMarker({ position, onChange }) {
-  const [markerPosition, setMarkerPosition] = useState(position);
-
-  // ✅ Keep marker in sync when `position` prop changes
+// ✅ Recenter map and zoom to pinned location
+function RecenterZoom({ coordinates }) {
+  const map = useMap();
   useEffect(() => {
-    setMarkerPosition(position);
-  }, [position]);
+    if (!coordinates) return;
 
-  useMapEvents({
-    click(e) {
-      const latlng = [e.latlng.lat, e.latlng.lng];
-      setMarkerPosition(latlng);
-      onChange(latlng);
-    },
-  });
+    // Zoom to the circle around pinned location (approx 20km)
+    const radius = 20000; // meters
+    map.fitBounds([
+      [coordinates.lat - 0.2, coordinates.lng - 0.2],
+      [coordinates.lat + 0.2, coordinates.lng + 0.2],
+    ]);
 
-  return (
-    <Marker
-      position={markerPosition}
-      draggable
-      eventHandlers={{
-        dragend: (e) => {
-          const latlng = e.target.getLatLng();
-          const newPos = [latlng.lat, latlng.lng];
-          setMarkerPosition(newPos);
-          onChange(newPos);
-        },
-      }}
-    />
-  );
+    // Optional: keep map max bounds restricted to India
+    const indiaBounds = [
+      [6.5546079, 68.1100483], // SW
+      [35.6745457, 97.395561], // NE
+    ];
+    map.setMaxBounds(indiaBounds);
+    map.setMinZoom(5);
+    map.setMaxZoom(12);
+  }, [coordinates, map]);
+  return null;
 }
 
-
 // ✅ Main Component
-export function MapSelector({ pincode = "110001", onSelect }) {
-  const [coordinates, setCoordinates] = useState([28.6328, 77.2197]); // Default Delhi
-  const [loading, setLoading] = useState(true);
+export function MapSelector({ pincode = "", onSelect }) {
+  const [coordinates, setCoordinates] = useState(null);
   const [locationInfo, setLocationInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (!pincode) return;
+
     async function fetchCoords() {
       setLoading(true);
       const result = await getLocationFromPincode(pincode);
-
       if (!result.error && result.coordinates) {
-        setCoordinates([result.coordinates.lat, result.coordinates.lng]);
+        setCoordinates(result.coordinates);
         setLocationInfo(result);
-        onSelect?.(result); // send back location info
+        onSelect?.(result);
       }
       setLoading(false);
     }
-    fetchCoords();
-  }, [pincode]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-72 bg-gray-100 rounded-md">
-        <p className="text-gray-500">Loading map...</p>
-      </div>
-    );
-  }
+    fetchCoords();
+  }, [pincode, onSelect]);
 
   return (
     <div>
-      <MapContainer
-        center={coordinates}
-        zoom={13}
-        style={{ height: "300px", width: "100%", borderRadius: "12px" }}
-        attributionControl={false}
-      >
+      {loading && (
+        <div className="flex items-center justify-center h-72 bg-gray-100 rounded-md">
+          <p className="text-gray-500">Loading map...</p>
+        </div>
+      )}
 
-        {/* ✅ This keeps map in sync with state */}
-        <RecenterMap coordinates={coordinates} />
+      {!loading && coordinates && (
+        <MapContainer
+          center={coordinates}
+          zoom={6}
+          style={{ height: "400px", width: "100%", borderRadius: "12px" }}
+          attributionControl={false}
+        >
+          <RecenterZoom coordinates={coordinates} />
 
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="© Valmo Maps"
-        />
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution="© OpenStreetMap contributors"
+          />
 
-        <DraggableMarker
-          position={coordinates}
-          onChange={(pos) =>
-            onSelect?.({ ...locationInfo, coordinates: { lat: pos[0], lng: pos[1] } })
-          }
-        />
-      </MapContainer>
+          <Marker position={coordinates} />
+          <Circle
+            center={coordinates}
+            radius={20000} // 20km
+            pathOptions={{ color: "blue", fillColor: "#blue", fillOpacity: 0.2 }}
+          />
+        </MapContainer>
+      )}
 
       {locationInfo && (
         <div className="mt-2 text-sm text-gray-600">
-          📍 {locationInfo.district}, {locationInfo.state}, {locationInfo.country}, {coordinates[0]}
+          📍 {locationInfo.district}, {locationInfo.state}, {locationInfo.country}
         </div>
       )}
     </div>
   );
 }
 
-function RecenterMap({ coordinates }) {
-  const map = useMap();
-  useEffect(() => {
-    if (coordinates) {
-      map.setView(coordinates, 13); // update map center
-    }
-  }, [coordinates, map]);
-  return null;
-}
 
