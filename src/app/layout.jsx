@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <Script id="meta-pixel" strategy="afterInteractive">
+         <Script id="meta-pixel" strategy="afterInteractive">
         {`
           !function(f,b,e,v,n,t,s)
           {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
           t.src=v;s=b.getElementsByTagName(e)[0];
           s.parentNode.insertBefore(t,s)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
-          fbq('init', '1507946703843491');
+          fbq('init', '877040814646806');
           fbq('track', 'PageView');
         `}
       </Script>
@@ -45,7 +45,7 @@ export default function RootLayout({ children }) {
           height="1"
           width="1"
           style={{ display: "none" }}
-          src="https://www.facebook.com/tr?id=1507946703843491&ev=PageView&noscript=1"
+          src="https://www.facebook.com/tr?id=877040814646806&ev=PageView&noscript=1"
         />
       </noscript>
 
